@@ -25,8 +25,27 @@ cfg_artfctdef       = brodata.artfctdef;
 %% artifact rejection
 cfg                     = [];
 cfg.artifactdef         = cfg_artfctdef;
-cfg.artfctdef.reject    = 'nan';
+cfg.artfctdef.reject    = 'partial';
 data_clean              = ft_rejectartifact(cfg, resampdata);
+%% ICA decomposition
+cfg              = [];
+cfg.method       = 'fastica';
+cfg.numcomponent = 64; %why does it stop after 52 components?
+data_comp = ft_componentanalysis(cfg, data_clean); % using the data without atypical artifacts
+%% Identifying artifactual components
+cfg           = [];
+cfg.layout    = 'acticap-64ch-standard2.mat';
+cfg.component = 1:10;
+cfg.marker    = 'off';
+ft_topoplotIC(cfg, data_comp)
+% look at the time course of the components
+cfg = [];
+cfg.viewmode  = 'component';
+cfg.layout    = 'CTF151.lay';
+cfg.blocksize = 45;
+ft_databrowser(cfg, data_comp);
+
+
 %% FP1 and FP2 need to be removed
 %%
 % cfg = [];
@@ -49,6 +68,3 @@ cfg.dftfilter   = 'yes';
 % cfg.hpfreq    = 0.5;
 % cfg.hpfilter  = 'yes';
 trialdata       = ft_preprocessing(cfg);
-
-
-
