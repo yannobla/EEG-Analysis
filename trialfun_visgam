@@ -18,9 +18,9 @@ Word = find(strcmp('S  4', EVvalue)==1);
 for w = 1:length(Word)
   % code for the judgement task: 1 => Affective; 2 => Ontological;
   if strcmp('S 16', EVvalue{Word(w)+2}) ==1
-      correct(w,1) = 1
+      correct(w,1) = 1;
   elseif strcmp('S 48', EVvalue{Word(w)+2}) == 1
-      correct(w,1) = 1  
+      correct(w,1) = 1;  
   end
 end
 
@@ -37,6 +37,10 @@ offset = -PreTrig*ones(size(endsample));
 % return the trl matrix (required) and the event structure (optional)
 trl = [begsample endsample offset correct];
 trl = trl(trl(:, 4) ~= 0, :);
+
+
+end % function
+
 
 
 end % function
