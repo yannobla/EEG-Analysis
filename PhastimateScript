@@ -23,11 +23,6 @@ for file_idx = 1:length(file_list)
 
     % Extract the base name and replace underscores with spaces
     name = strrep(base_name, '_', ' ');  % Replace '_' with ' ' in the base file name
-
-    % Read the header and event information
-    % hdr = ft_read_header(vhdr_file);  % Dynamically read the .vhdr file
-    % event = ft_read_event(eeg_file);  % Dynamically read the .eeg file
-
     fprintf('Processing file (loading and preprocessing): %s (Name: %s)\n', vhdr_file, name);  % Debugging output
 
     %% Segment data into trials with correct trialfunction
