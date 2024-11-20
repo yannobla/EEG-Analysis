@@ -1,0 +1,93 @@
+% Restore MATLAB default path and add necessary paths
+restoredefaultpath
+addpath 'C:\Users\melis\Documents\MATLAB\fieldtrip-20240731'
+ft_defaults
+addpath ('C:\Users\melis\Documents\Trento\TESTMS\Data\')
+addpath ('C:\Users\melis\Documents\Trento\TESTMS\Scripts\')
+
+% Define the directory containing the BrainVision files
+data_dir = 'C:\Users\melis\Documents\Trento\TESTMS\Data\ys_1607';
+output_dir = fullfile(data_dir, 'Processed');  % Directory to save processed files
+if ~exist(output_dir, 'dir')
+    mkdir(output_dir);  % Create output directory if it doesn't exist
+end
+
+file_list = dir(fullfile(data_dir, '*.vhdr'));  % Get a list of all .vhdr files
+
+%% First Loop: Load, preprocess, and save filtered data
+for file_idx = 1:length(file_list)
+    % Get the current .vhdr file and construct associated file paths
+    vhdr_file = fullfile(data_dir, file_list(file_idx).name);  % Full path to .vhdr file
+    [~, base_name, ~] = fileparts(vhdr_file);
+    eeg_file = fullfile(data_dir, [base_name, '.eeg']);  % Full path to corresponding .eeg file
+
+    % Extract the base name and replace underscores with spaces
+    name = strrep(base_name, '_', ' ');  % Replace '_' with ' ' in the base file name
+
+    % Read the header and event information
+    % hdr = ft_read_header(vhdr_file);  % Dynamically read the .vhdr file
+    % event = ft_read_event(eeg_file);  % Dynamically read the .eeg file
+
+    fprintf('Processing file (loading and preprocessing): %s (Name: %s)\n', vhdr_file, name);  % Debugging output
+
+    %% Segment data into trials with correct trialfunction
+    cfg = [];
+    cfg.trialfun = 'trialfun_checkphase'; 
+    cfg.headerfile = vhdr_file;  % Use dynamically assigned vhdr_file
+    cfg.datafile = eeg_file;  % Use dynamically assigned eeg_file
+    trialdata = ft_definetrial(cfg);
+    preproc_data = ft_preprocessing(trialdata);
+
+    % Resample the data
+    cfg = [];
+    cfg.resamplefs = 1000;
+    resampdata = ft_resampledata(cfg, preproc_data);
+
+    % Select specific channels and preprocess
+    cfg = [];
+    cfg.channel = {'C3', 'FC1', 'CP1', 'FC5', 'CP5'};
+    EEGchannel_data = ft_preprocessing(cfg, resampdata);
+
+    % Create a new data structure for the filtered data
+    filtered_data = EEGchannel_data;
+    filtered_data.label = {'C3_Hjorth'};  % New channel name
+
+    % Apply the Hjorth filter
+    for i = 1:numel(EEGchannel_data.trial)
+        original_matrix = EEGchannel_data.trial{i};
+
+        % Extract the first row (C3)
+        c3_data = original_matrix(1,:);
+        
+        % Calculate the average of the other rows
+        avg_other_channels = mean(original_matrix(2:end,:), 1);
+        
+        % Apply the Hjorth filter
+        filtered_row = c3_data - 0.25 * avg_other_channels;
+        
+        % Store the result in the new data structure
+        filtered_data.trial{i} = filtered_row;
+    end
+
+    % Update the number of channels
+    filtered_data.hdr.nChans = 1;
+    filtered_data.hdr.label = filtered_data.label;
+
+    % Save the filtered data
+    save(fullfile(output_dir, [base_name, '_filtered.mat']), 'filtered_data');
+end
+
+%% Second Loop: Load processed data and perform Phastimate
+for file_idx = 1:length(file_list)
+    % Get the current file's base name
+    [~, base_name, ~] = fileparts(file_list(file_idx).name);
+
+    % Load the filtered data
+    filtered_file = fullfile(output_dir, [base_name, '_filtered.mat']);
+    if ~isfile(filtered_file)
+        fprintf('Filtered file not found for %s. Skipping.\n', base_name);
+        continue;
+    end
+    load(filtered_file, 'filtered_data');  % Load saved filtered_data
+
+    fprintf('Processing file (Phastimate): %s\n', base_name);  % Debugging output
