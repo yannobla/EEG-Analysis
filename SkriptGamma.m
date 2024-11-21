@@ -196,8 +196,8 @@
 %% Fourth Loop: Time-Frequency-Analysis
 
     % If necessary, define the directory containing the preprocessed files
-    % data_dir                  ='C:\Users\melis\Documents\Trento\Verona_Experiment\YS.visGamma.20241029';    % these two lines only need to be executed if 
-    % postica_dir               = fullfile(data_dir, 'PostICA');                                              % you want to resume your analysis here after 
+    % data_dir                  ='C:\Users\melis\Documents\Trento\Verona_Experiment\YS.visGamma.20241029';      % these two lines only need to be executed if 
+    % postica_dir               = fullfile(data_dir, 'PostICA');                                                % you want to resume your analysis here after 
                                                                                                                 % closing matlab or losing your workspace
     file_list                   = dir(fullfile(postica_dir, '*.mat'));                                          % Get a list of all .mat files
     
@@ -264,8 +264,8 @@
 %% Fifth Loop: Plot and save figures
 
     % If necessary, define the directory containing the preprocessed files
-    data_dir                    ='C:\Users\melis\Documents\Trento\Verona_Experiment\YS.visGamma.20241029';      % these two lines only need to be executed if 
-    TFR_dir                     = fullfile(data_dir, 'TFR');                                                    % you want to resume your analysis here after 
+    % data_dir                  ='C:\Users\melis\Documents\Trento\Verona_Experiment\YS.visGamma.20241029';    % these two lines only need to be executed if 
+    % TFR_dir                   = fullfile(data_dir, 'TFR');                                                  % you want to resume your analysis here after 
                                                                                                                 % closing matlab or losing your workspace
     file_list                   = dir(fullfile(TFR_dir, '*.mat'));                                              % Get a list of all .mat files
     
@@ -319,5 +319,3 @@
         fprintf('Figure for %s saved to %s\n', base_name, figure_file);                                         % Log success
                                                                                                                       
     end
-
-    
