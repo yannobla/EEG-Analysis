@@ -171,9 +171,10 @@
             figure('Name', 'Components 22–42', 'NumberTitle', 'off');                                           % Create a new figure
             ft_topoplotIC(cfg, data_comp);                                                                      % Plot the second group of components
             
-            % Third window: Components 43–64
-            cfg.component       = 43:64;                                                                        % Select components 43–64
-            figure('Name', 'Components 43–64', 'NumberTitle', 'off');                                           % Create a new figure
+            % Third window: Components 43 to last component
+            last_component      = size(data_comp.topo, 1);                                                      % Determine the total number of components
+            cfg.component       = 43:last_component;                                                            % Select components 43 to the last one
+            figure('Name', sprintf('Components 43-%d', last_component), 'NumberTitle', 'off');                  % Create a new figure
             ft_topoplotIC(cfg, data_comp);                                                                      % Plot the third group of components
 
              
