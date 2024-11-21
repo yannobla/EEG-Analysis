@@ -252,11 +252,11 @@
 
 
         % Save the cleaned data
-        TFR_dir                 = fullfile(data_dir, 'TFR');                                                        % Directory to save cleaned files
+        TFR_dir                 = fullfile(data_dir, 'TFR');                                                    % Directory to save cleaned files
             if ~exist(TFR_dir, 'dir')
                 mkdir(TFR_dir);                                                                                 % Create output directory if it doesn't exist
             end
-        name                    = strrep(base_name, 'postica', 'TFR');                                         % Replace 'postica' with 'TFR' in filename  
+        name                    = strrep(base_name, 'postica', 'TFR');                                          % Replace 'postica' with 'TFR' in filename  
         save(fullfile(TFR_dir, name), 'freq_stim');                                                             % to prevent filenames from getting too long
                                                                                                                 
     end
@@ -264,8 +264,8 @@
 %% Fifth Loop: Plot and save figures
 
     % If necessary, define the directory containing the preprocessed files
-    % data_dir                  ='C:\Users\melis\Documents\Trento\Verona_Experiment\YS.visGamma.20241029';    % these two lines only need to be executed if 
-    % TFR_dir                   = fullfile(data_dir, 'TFR');                                                  % you want to resume your analysis here after 
+    % data_dir                  ='C:\Users\melis\Documents\Trento\Verona_Experiment\YS.visGamma.20241029';      % these two lines only need to be executed if 
+    % TFR_dir                   = fullfile(data_dir, 'TFR');                                                    % you want to resume your analysis here after 
                                                                                                                 % closing matlab or losing your workspace
     file_list                   = dir(fullfile(TFR_dir, '*.mat'));                                              % Get a list of all .mat files
     
